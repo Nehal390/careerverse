@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light mode (default) — soft neutral surfaces, premium SaaS palette */
+    --background: 255 255 255;
+    --foreground: 24 24 27;       /* zinc-900 */
+    --surface: 250 250 251;        /* near-white card surface */
+    --surface-raised: 244 244 246;
+    --border: 228 228 233;         /* zinc-200-ish */
+    --muted-fg: 113 113 122;       /* zinc-500 */
+  }
+
+  .dark {
+    --background: 10 10 12;
+    --foreground: 244 244 246;
+    --surface: 19 19 22;
+    --surface-raised: 26 26 30;
+    --border: 39 39 46;            /* zinc-800-ish hairline against near-black */
+    --muted-fg: 161 161 170;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  ::selection {
+    background: rgb(99 102 241 / 0.18);
+    color: rgb(var(--foreground));
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--foreground) / 0.14);
+    border-radius: 999px;
+    border: 2px solid rgb(var(--background));
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--foreground) / 0.22);
+  }
+
+  /* Accessible, visible focus rings everywhere — keyboard nav first */
+  :focus-visible {
+    outline: 2px solid rgb(99 102 241 / 0.6);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Glass surface — a soft tint of the current foreground color, so it
+     reads correctly in both light and dark mode with zero per-page logic. */
+  .glass {
+    background: rgb(var(--surface) / 0.7);
+    backdrop-filter: blur(20px) saturate(1.1);
+    -webkit-backdrop-filter: blur(20px) saturate(1.1);
+    border: 1px solid rgb(var(--border) / 1);
+  }
+  .dark .glass {
+    border-color: rgb(var(--border) / 0.1);
+  }
+
+  .glass-strong {
+    background: rgb(var(--surface) / 0.9);
+    backdrop-filter: blur(24px) saturate(1.1);
+    -webkit-backdrop-filter: blur(24px) saturate(1.1);
+    border: 1px solid rgb(var(--border) / 1);
+    box-shadow: 0 8px 30px rgb(var(--foreground) / 0.06);
+  }
+  .dark .glass-strong {
+    border-color: rgb(var(--border) / 0.1);
+    box-shadow: 0 8px 30px rgb(0 0 0 / 0.35);
+  }
+
+  /* Gradient border wrapper: put content in a child with a real background */
+  .gradient-border {
+    position: relative;
+    border-radius: 1.125rem;
+    padding: 1px;
+    background: linear-gradient(
+      140deg,
+      rgb(99 102 241 / 0.35),
+      rgb(20 184 166 / 0.2) 45%,
+      rgb(244 114 182 / 0.3)
+    );
+  }
+  .dark .gradient-border {
+    background: linear-gradient(
+      140deg,
+      rgb(99 102 241 / 0.55),
+      rgb(20 184 166 / 0.3) 45%,
+      rgb(244 114 182 / 0.4)
+    );
+  }
+  .gradient-border > * {
+    border-radius: calc(1.125rem - 1px);
+  }
+
+  .text-gradient {
+    background: linear-gradient(120deg, #4f46e5 0%, #0d9488 50%, #db2777 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dark .text-gradient {
+    background: linear-gradient(120deg, #818cf8 0%, #5eead4 50%, #f9a8d4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Soft, restrained color wash — the light-mode version reads as a barely
+     -there tint; dark mode gets a touch more presence. This single class
+     powers every hero/CTA/auth background in the app. */
+  .mesh-aurora {
+    background-image:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgb(99 102 241 / 0.07), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 0%, rgb(20 184 166 / 0.06), transparent 60%),
+      radial-gradient(ellipse 45% 45% at 60% 60%, rgb(244 114 182 / 0.05), transparent 60%);
+  }
+  .dark .mesh-aurora {
+    background-image:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgb(99 102 241 / 0.22), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 0%, rgb(20 184 166 / 0.16), transparent 60%),
+      radial-gradient(ellipse 45% 45% at 60% 60%, rgb(244 114 182 / 0.12), transparent 60%);
+  }
+
+  /* Faint dot/line grid that fades into the page background — theme-aware,
+     shared by the hero, inner-page headers, and the auth shell. */
+  .grid-overlay {
+    background-image:
+      linear-gradient(to bottom, transparent, rgb(var(--background)) 90%),
+      linear-gradient(rgb(var(--foreground) / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--foreground) / 0.05) 1px, transparent 1px);
+    background-size: 100% 100%, 64px 64px, 64px 64px;
+    opacity: 0.6;
+  }
+
+  /* Shared button system */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-all duration-200 ease-premium disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-primary-500 text-white shadow-card hover:bg-primary-600 hover:shadow-card-hover active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply btn border border-border bg-surface text-foreground shadow-subtle hover:bg-surface-raised active:scale-[0.98];
+  }
+  .btn-ghost {
+    @apply btn text-muted hover:bg-foreground/5 hover:text-foreground active:scale-[0.98];
+  }
+
+  /* Shared card surface */
+  .card {
+    @apply rounded-2xl border border-border bg-surface shadow-subtle transition-all duration-200 ease-premium;
+  }
+  .card-interactive {
+    @apply card hover:-translate-y-0.5 hover:border-primary-500/30 hover:shadow-card-hover;
+  }
+
+  /* Form fields */
+  .input-field {
+    @apply w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-foreground placeholder:text-muted transition-colors duration-200 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/15;
+  }
+
+  /* Skeleton loading shimmer */
+  .skeleton {
+    @apply relative overflow-hidden rounded-lg bg-surface-raised;
+    background-image: linear-gradient(
+      90deg,
+      rgb(var(--surface-raised)) 0%,
+      rgb(var(--foreground) / 0.06) 50%,
+      rgb(var(--surface-raised)) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+}
