@@ -93,26 +93,7 @@ http://localhost:3000
 ```
 
 ---
-
-## 🔑 Environment Variables
-
-Create a `.env.local` file and add your API keys.
-
-Example:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
-OPENAI_API_KEY=your_key
-```
-
----
-
-## 📸 Screenshots
-
-Coming Soon
-
----
+ 
 
 ## 🚀 Deployment
 
